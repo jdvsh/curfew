@@ -1,0 +1,75 @@
+<Window x:Class="Curfew.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Curfew.Controls"
+        Title="Curfew" Width="960" Height="680" MinWidth="720" MinHeight="520"
+        Background="#EEF1EC" FontFamily="Segoe UI" FontSize="14">
+
+    <Grid>
+        <TextBlock x:Name="MessageText" Text="Loading..." TextWrapping="Wrap"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <Grid x:Name="MainGrid" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="210" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <DockPanel Grid.Column="0" Background="#E3E8E2" LastChildFill="True">
+                <TextBlock DockPanel.Dock="Top" Text="Curfew" FontSize="18" FontWeight="SemiBold" Margin="16,16,16,20" />
+                <!-- TODO: wire up to WindowsScheduleService.ListLocalAccountsAsync() -->
+                <Button DockPanel.Dock="Bottom" Content="+ Add child" IsEnabled="False" Margin="16" Padding="8,6" />
+                <ListBox x:Name="AccountList" Background="Transparent" BorderThickness="0"
+                         Margin="8,0" SelectionChanged="AccountList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Padding="4,6" TextTrimming="CharacterEllipsis" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <!-- Content -->
+            <Grid Grid.Column="1" Margin="28">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Discard" Padding="14,6" Margin="0,0,8,0" Click="Discard_Click" />
+                        <Button x:Name="SaveButton" Content="Save schedule" Padding="14,6" Click="Save_Click" />
+                    </StackPanel>
+                    <TextBlock x:Name="TitleText" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,18">
+                    <RadioButton x:Name="ModeSame" Content="Same every day" GroupName="Mode"
+                                 Style="{StaticResource {x:Type ToggleButton}}" Padding="14,6" Click="ModeSame_Click" />
+                    <RadioButton x:Name="ModeDiff" Content="Different each day" GroupName="Mode"
+                                 Style="{StaticResource {x:Type ToggleButton}}" Padding="14,6" Click="ModeDiff_Click" />
+                </StackPanel>
+
+                <Grid Grid.Row="2">
+                    <StackPanel x:Name="SameView">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Allowed from " VerticalAlignment="Center" />
+                            <ComboBox x:Name="FromBox" MinWidth="90" SelectionChanged="SameRange_Changed" />
+                            <TextBlock Text=" until " VerticalAlignment="Center" />
+                            <ComboBox x:Name="ToBox" MinWidth="90" SelectionChanged="SameRange_Changed" />
+                        </StackPanel>
+                        <TextBlock Text="Applies Monday through Sunday, every week." FontSize="12" Margin="0,12,0,0" />
+                        <TextBlock x:Name="WeeklyHoursText" Margin="0,12,0,0" />
+                    </StackPanel>
+                    <controls:ScheduleHoursGrid x:Name="HoursGrid" Visibility="Collapsed" />
+                </Grid>
+
+                <TextBlock x:Name="StatusText" Grid.Row="3" TextWrapping="Wrap" Margin="0,12,0,0" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
